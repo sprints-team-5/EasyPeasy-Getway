@@ -2,6 +2,8 @@ import { CustomServer } from "./Core/CustomeServer";
 import { BodyParserMiddleware } from "./Middlewares/BodyParserMiddleware";
 import { HomeRouter } from "./Routes/HomeRouter";
 import { TransactionsRouter } from "./Routes/TransactionsRouter";
+import { MerchantRouter } from "./Routes/MerchantRouter";
+import { ServiceRouter } from "./Routes/ServiceRouter";
 
 /**
  * init server
@@ -16,6 +18,8 @@ app.middleware(new BodyParserMiddleware());
  */
 app.route(new HomeRouter());
 app.route(new TransactionsRouter());
+app.route(new MerchantRouter());
+app.route(new ServiceRouter());
 /**
  * start application
  */

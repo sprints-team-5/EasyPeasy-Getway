@@ -10,8 +10,10 @@ export class Transaction {
   customerCVV: IntegerType;
   billAmount: Number;
   trxFees: Number;
-  trxType: boolean;
+  totAmount: Number;
+  trxType: string;
   date: Timestamp;
+  serviceId: string;
 
   constructor(
     merchant_id: string,
@@ -21,9 +23,10 @@ export class Transaction {
     customerCVV: IntegerType,
     billAmount: Number,
     trxFees: Number = 0.02, // default fees 2%
-    trxType: boolean, // 0: pay, 1: refund
-    date: Timestamp
-    // serviceId: string,    // @TODO
+    totAmount: Number,
+    trxType: string, // 0: pay, 1: refund
+    date: Timestamp,
+    serviceId: string,    // @TODO
   ) {
     this.merchant_id = merchant_id;
     this.customerCardHolderName = customerCardHolderName;
@@ -32,7 +35,9 @@ export class Transaction {
     this.customerCVV = customerCVV;
     this.billAmount = billAmount;
     this.trxFees = trxFees;
+    this.totAmount=totAmount;
     this.trxType = trxType;
     this.date = date;
+    this.serviceId = serviceId;
   }
 }

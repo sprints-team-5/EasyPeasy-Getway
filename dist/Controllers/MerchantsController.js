@@ -38,7 +38,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateMerchant = exports.AllMerchants = void 0;
 var MerchantService_1 = require("../Services/MerchantService");
+var EncryptService_1 = require("../Services/EncryptService");
 var merchantService = new MerchantService_1.MerchantService();
+var encryptedService = new EncryptService_1.EncryptService();
 /**
  *
  * @param req
@@ -71,15 +73,15 @@ exports.AllMerchants = AllMerchants;
  */
 function CreateMerchant(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var merchantId, name, email, password, cardHolderName, cardNumber, expireDate, CVV, merchant, e_1;
+        var merchantId, name_1, email, password, cardHolderName, cardNumber, expireDate, CVV, merchant, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
                     merchantId = req.body.merchantId;
-                    name = req.body.name;
+                    name_1 = req.body.name;
                     email = req.body.email;
-                    password = req.body.password;
+                    password = encryptedService.encryptUsingAES256(req.body.password).toString();
                     cardHolderName = req.body.cardHolderName;
                     cardNumber = req.body.cardNumber;
                     expireDate = req.body.expireDate;
@@ -87,7 +89,7 @@ function CreateMerchant(req, res) {
                     console.log(CVV);
                     return [4 /*yield*/, merchantService.create({
                             merchantId: merchantId,
-                            name: name,
+                            name: name_1,
                             email: email,
                             password: password,
                             cardNumber: cardNumber,

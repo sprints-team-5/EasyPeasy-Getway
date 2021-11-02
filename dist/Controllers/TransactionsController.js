@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,12 +54,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTransaction = exports.AllTransaction = void 0;
 var TransactionService_1 = require("../Services/TransactionService");
-var ServiceService_1 = require("../Services/ServiceService");
+var ServiceTypesService_1 = require("../Services/ServiceTypesService");
+var MerchantService_1 = require("../Services/MerchantService");
+var EncryptService_1 = require("../Services/EncryptService");
+var CryptoJS = __importStar(require("crypto-js"));
+var axios_1 = __importDefault(require("axios"));
 var transactionService = new TransactionService_1.TransactionService();
-var Service = new ServiceService_1.ServiceService();
+var Service = new ServiceTypesService_1.ServiceTypesService();
+var Merchant = new MerchantService_1.MerchantService();
+var Security = new EncryptService_1.EncryptService();
+var MongoDB = require('mongoDB');
 /**
  *
  * @param req
@@ -73,52 +102,113 @@ exports.AllTransaction = AllTransaction;
  */
 function CreateTransaction(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var results, feesAmt, totAmt, merchant_id, customerCardHolderName, customerCardNumber, customerExpireDate, customerCVV, billAmount, trxFees, totAmount, trxType, date, serviceId, transaction, e_1;
+        var validService, validMerchant, authorized, email, pass, serviceTypesRes, merchantIdRes, feesAmt, totAmt, merchantName, transStatus, transactionData, headers, url, merchant_id, customerCardHolderName, customerCardNumber, customerExpireDate, customerCVV, serviceId, billAmount, trxFees, totAmount, date, trx_status, transaction, e_1, e_2, e_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Service.findById(req.body.serviceId)];
+                case 0:
+                    validService = true;
+                    validMerchant = true;
+                    authorized = false;
+                    return [4 /*yield*/, Service.findByTypeId(req.body.serviceId)];
                 case 1:
-                    results = _a.sent();
-                    if (!(results == null)) return [3 /*break*/, 2];
-                    res.json({ message: "invalid service ID or merchant ID !!" });
-                    return [3 /*break*/, 6];
+                    serviceTypesRes = _a.sent();
+                    if (serviceTypesRes == null) {
+                        //res.json({message: "invalid service ID or merchant ID !!"});
+                        validService = false;
+                    }
+                    return [4 /*yield*/, Merchant.findByMerchantId(req.body.merchant_id)];
                 case 2:
-                    feesAmt = Number.parseInt(results.feesAmount);
+                    merchantIdRes = _a.sent();
+                    if (merchantIdRes == null) {
+                        validMerchant = false;
+                    }
+                    else {
+                        email = merchantIdRes.email;
+                        pass = Security.decryptUsingAES256(merchantIdRes.password).toString(CryptoJS.enc.Utf8);
+                        console.log("Password: ", pass);
+                    }
+                    if (email == req.headers.username && pass == req.headers.password) {
+                        authorized = true;
+                    }
+                    if (!authorized) return [3 /*break*/, 9];
+                    if (!(validService && validMerchant)) return [3 /*break*/, 7];
+                    feesAmt = Number.parseInt(serviceTypesRes.feesAmount);
                     totAmt = Number.parseInt(req.body.billAmount) + feesAmt;
+                    merchantName = merchantIdRes.name;
+                    transStatus = false;
                     _a.label = 3;
                 case 3:
                     _a.trys.push([3, 5, , 6]);
+                    transactionData = {
+                        'cardid': req.body.customerCardNumber,
+                        'ccv': req.body.customerCVV,
+                        'amount': totAmt,
+                        'merchant': merchantName,
+                        'timestamp': '',
+                        'Payment_gateway_ID': 100
+                    };
+                    headers = {
+                        'Username': 'gateway100',
+                        'Password': 'Sprints'
+                    };
+                    url = 'https://sprintsbank.herokuapp.com/';
+                    axios_1.default.post(url, transactionData, {
+                        headers: headers
+                    })
+                        .then(function (response) {
+                        res.send(response.data);
+                        transStatus = response.data.accepted;
+                        console.log('transaction status: ', transStatus);
+                    })
+                        .catch(function (error) {
+                        res.send({
+                            status: '500',
+                            message: error
+                        });
+                    });
                     merchant_id = req.body.merchant_id;
                     customerCardHolderName = req.body.customerCardHolderName;
                     customerCardNumber = req.body.customerCardNumber;
                     customerExpireDate = req.body.customerExpireDate;
                     customerCVV = req.body.customerCVV;
+                    serviceId = req.body.serviceId;
                     billAmount = req.body.billAmount;
                     trxFees = feesAmt;
                     totAmount = totAmt;
-                    trxType = req.body.trxType;
-                    date = req.body.date;
-                    serviceId = req.body.serviceId;
+                    date = new MongoDB.Timestamp(0, Math.floor(new Date().getTime() / 1000));
+                    trx_status = transStatus.toString();
                     return [4 /*yield*/, transactionService.create({
                             merchant_id: merchant_id,
                             customerCardHolderName: customerCardHolderName,
                             customerCardNumber: customerCardNumber,
                             customerExpireDate: customerExpireDate,
                             customerCVV: customerCVV,
+                            serviceId: serviceId,
                             billAmount: billAmount,
                             trxFees: trxFees,
                             totAmount: totAmount,
-                            trxType: trxType,
                             date: date,
-                            serviceId: serviceId
+                            trx_status: trx_status
                         })];
                 case 4:
                     transaction = _a.sent();
-                    return [2 /*return*/, res.send({ transaction: transaction })];
+                    return [3 /*break*/, 6];
                 case 5:
                     e_1 = _a.sent();
-                    return [2 /*return*/, res.status(404).send({ message: e_1.message })];
-                case 6: return [2 /*return*/];
+                    console.log(e_1);
+                    res.send(e_1);
+                    return [3 /*break*/, 6];
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    e_2 = "either invalid  service or merchant";
+                    res.send({ message: e_2 });
+                    _a.label = 8;
+                case 8: return [3 /*break*/, 10];
+                case 9:
+                    e_3 = "Not authorized !!";
+                    res.send({ message: e_3 });
+                    _a.label = 10;
+                case 10: return [2 /*return*/];
             }
         });
     });

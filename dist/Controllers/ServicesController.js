@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateService = exports.AllServices = void 0;
-var ServiceService_1 = require("../Services/ServiceService");
-var serviceService = new ServiceService_1.ServiceService();
+var ServiceTypesService_1 = require("../Services/ServiceTypesService");
+var serviceService = new ServiceTypesService_1.ServiceTypesService();
 /**
  *
  * @param req
@@ -71,17 +71,17 @@ exports.AllServices = AllServices;
  */
 function CreateService(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var typeId, name, feesAmount, service, e_1;
+        var typeId, name_1, feesAmount, service, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
                     typeId = req.body.typeId;
-                    name = req.body.name;
+                    name_1 = req.body.name;
                     feesAmount = req.body.feesAmount;
                     return [4 /*yield*/, serviceService.create({
                             typeId: typeId,
-                            name: name,
+                            name: name_1,
                             feesAmount: feesAmount
                         })];
                 case 1:

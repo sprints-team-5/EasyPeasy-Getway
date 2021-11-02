@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { MerchantService } from "../Services/MerchantService";
+import { EncryptService } from "../Services/EncryptService";
 
-const merchantService = new MerchantService();
-
+const merchantService  = new MerchantService();
+const encryptedService = new EncryptService();
 /**
  *
  * @param req
@@ -24,7 +25,7 @@ export async function CreateMerchant(req: Request, res: Response) {
     let merchantId = req.body.merchantId;
     let name = req.body.name;
     let email = req.body.email;
-    let password = req.body.password;
+    let password = encryptedService.encryptUsingAES256(req.body.password).toString();
     let cardHolderName = req.body.cardHolderName;
     let cardNumber = req.body.cardNumber;
     let expireDate = req.body.expireDate;

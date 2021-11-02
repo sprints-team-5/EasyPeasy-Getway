@@ -1,6 +1,3 @@
-/**
- * qa branch for testing ...
- *  */
 import { CustomServer } from "./Core/CustomeServer";
 import { BodyParserMiddleware } from "./Middlewares/BodyParserMiddleware";
 import { HomeRouter } from "./Routes/HomeRouter";

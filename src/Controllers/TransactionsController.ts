@@ -2,12 +2,16 @@ import e, { Request, response, Response } from "express";
 import { TransactionService } from "../Services/TransactionService";
 import { ServiceTypesService } from "../Services/ServiceTypesService";
 import { MerchantService } from "../Services/MerchantService";
+import { EncryptService } from "../Services/EncryptService";
+import * as CryptoJS from "crypto-js";
 
 import axios from "axios";
 
 const transactionService = new TransactionService();
 const Service  = new ServiceTypesService();
 const Merchant = new MerchantService();
+const Security = new EncryptService();
+
 var MongoDB = require('mongoDB');
 
 
@@ -30,6 +34,9 @@ export async function AllTransaction(req: Request, res: Response) {
 export async function CreateTransaction(req: Request, res: Response) {
   let validService = true;
   let validMerchant = true;
+  let authorized = false;
+  var email;
+  var pass;
   const serviceTypesRes:any = await Service.findByTypeId(req.body.serviceId);
   if(serviceTypesRes == null){   
       //res.json({message: "invalid service ID or merchant ID !!"});
@@ -38,7 +45,16 @@ export async function CreateTransaction(req: Request, res: Response) {
   const merchantIdRes:any = await Merchant.findByMerchantId(req.body.merchant_id);
   if(merchantIdRes == null){   
     validMerchant = false;
-  }   
+  }else{
+    email = merchantIdRes.email;
+    pass  = Security.decryptUsingAES256(merchantIdRes.password).toString(CryptoJS.enc.Utf8);
+    console.log("Password: ",pass);
+  }
+  if(email ==  req.headers.username && pass == req.headers.password){
+    authorized = true;
+  } 
+  if(authorized)
+  {
   if(validService && validMerchant){
     var feesAmt = Number.parseInt(serviceTypesRes.feesAmount);
     var totAmt  = Number.parseInt(req.body.billAmount) + feesAmt;
@@ -109,4 +125,8 @@ export async function CreateTransaction(req: Request, res: Response) {
     let e = "either invalid  service or merchant";
     res.send({message:e});
   }
+}else{
+  let e = "Not authorized !!";
+  res.send({message:e});
+}
 }

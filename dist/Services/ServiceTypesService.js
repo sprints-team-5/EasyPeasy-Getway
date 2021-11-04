@@ -36,54 +36,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MerchantService = void 0;
-var MerchantRepository_1 = require("../Data/Repositories/MerchantRepository");
-var Merchant_Model_1 = require("../Data/Models/Merchant.Model");
-//import { Timestamp } from "bson";
-var merchantRepo = new MerchantRepository_1.MerchantRepository();
-var MerchantService = /** @class */ (function () {
-    function MerchantService() {
+exports.ServiceTypesService = void 0;
+var ServiceTypesRepository_1 = require("../Data/Repositories/ServiceTypesRepository");
+var ServiceTypes_Model_1 = require("../Data/Models/ServiceTypes.Model");
+var serviceRepo = new ServiceTypesRepository_1.ServiceTypesRepository();
+var ServiceTypesService = /** @class */ (function () {
+    function ServiceTypesService() {
     }
-    MerchantService.prototype.create = function (data) {
+    ServiceTypesService.prototype.create = function (data) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var merchant, merchantId;
+            var service, serviceId;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        merchant = new Merchant_Model_1.Merchant(data.merchantId, data.name, data.email, data.password, data.cardHolderName, data.cardNumber, data.expireDate, data.CVV);
-                        return [4 /*yield*/, merchantRepo.insert(merchant)];
+                        service = new ServiceTypes_Model_1.ServiceTypes(data.typeId, data.name, data.feesAmount);
+                        return [4 /*yield*/, serviceRepo.insert(service)];
                     case 1:
-                        merchantId = ((_a = (_b.sent())) === null || _a === void 0 ? void 0 : _a.toString()) || "";
-                        return [2 /*return*/, this.findByIdOrFail(merchantId)];
+                        serviceId = ((_a = (_b.sent())) === null || _a === void 0 ? void 0 : _a.toString()) || "";
+                        return [2 /*return*/, this.findByIdOrFail(serviceId)];
                 }
             });
         });
     };
-    MerchantService.prototype.all = function () {
-        return merchantRepo.findAll();
+    ServiceTypesService.prototype.all = function () {
+        return serviceRepo.findAll();
     };
-    MerchantService.prototype.findById = function (id) {
-        return merchantRepo.findById(id);
+    ServiceTypesService.prototype.findById = function (id) {
+        return serviceRepo.findById(id);
     };
-    MerchantService.prototype.findByIdOrFail = function (id) {
+    ServiceTypesService.prototype.findByIdOrFail = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var merchant;
+            var service;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.findById(id)];
                     case 1:
-                        merchant = _a.sent();
-                        if (merchant)
-                            return [2 /*return*/, merchant];
+                        service = _a.sent();
+                        if (service)
+                            return [2 /*return*/, service];
                         throw new Error("missing or invalid Id");
                 }
             });
         });
     };
-    MerchantService.prototype.findByMerchantId = function (id) {
-        return merchantRepo.findByMerchantId(id);
+    ServiceTypesService.prototype.findByTypeId = function (id) {
+        return serviceRepo.findByTypeId(id);
     };
-    return MerchantService;
+    return ServiceTypesService;
 }());
-exports.MerchantService = MerchantService;
+exports.ServiceTypesService = ServiceTypesService;

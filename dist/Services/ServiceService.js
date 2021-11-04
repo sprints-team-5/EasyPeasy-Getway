@@ -82,6 +82,9 @@ var ServiceService = /** @class */ (function () {
             });
         });
     };
+    ServiceService.prototype.findByTypeId = function (id) {
+        return serviceRepo.findByTypeId(id);
+    };
     return ServiceService;
 }());
 exports.ServiceService = ServiceService;

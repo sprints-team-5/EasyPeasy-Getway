@@ -50,7 +50,7 @@ var TransactionService = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        transaction = new Transaction_Model_1.Transaction(data.merchant_id, data.customerCardHolderName, data.customerCardNumber, data.customerExpireDate, data.customerCVV, data.billAmount, data.trxFees, data.totAmount, data.trxType, data.date, data.serviceId);
+                        transaction = new Transaction_Model_1.Transaction(data.merchant_id, data.customerCardHolderName, data.customerCardNumber, data.customerExpireDate, data.customerCVV, data.serviceId, data.billAmount, data.trxFees, data.totAmount, data.date, data.trx_status);
                         return [4 /*yield*/, transactionRepo.insert(transaction)];
                     case 1:
                         transactionId = ((_a = (_b.sent())) === null || _a === void 0 ? void 0 : _a.toString()) || "";

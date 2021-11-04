@@ -93,6 +93,32 @@ var BaseRepo = /** @class */ (function () {
             });
         });
     };
+    BaseRepo.prototype.findByTypeId = function (id) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            (0, MongoConnection_1.ConnectToMongo)().then(function (d) {
+                return d.db.collection(_this.collectionName).findOne({ typeId: id }, function (err, result) {
+                    if (err)
+                        return reject(err);
+                    resolve(result);
+                    d.mongoClient.close();
+                });
+            });
+        });
+    };
+    BaseRepo.prototype.findByMerchantId = function (id) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            (0, MongoConnection_1.ConnectToMongo)().then(function (d) {
+                return d.db.collection(_this.collectionName).findOne({ merchantId: id }, function (err, result) {
+                    if (err)
+                        return reject(err);
+                    resolve(result);
+                    d.mongoClient.close();
+                });
+            });
+        });
+    };
     return BaseRepo;
 }());
 exports.BaseRepo = BaseRepo;

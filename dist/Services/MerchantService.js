@@ -81,6 +81,9 @@ var MerchantService = /** @class */ (function () {
             });
         });
     };
+    MerchantService.prototype.findByMerchantId = function (id) {
+        return merchantRepo.findByMerchantId(id);
+    };
     return MerchantService;
 }());
 exports.MerchantService = MerchantService;

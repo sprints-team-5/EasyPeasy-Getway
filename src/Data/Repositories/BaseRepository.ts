@@ -82,6 +82,32 @@ export abstract class BaseRepo<Model> {
                     d.mongoClient.close();
                 })
             })
-        });
+        });      
     }
+
+    findByTypeId(id: string): Promise<Model> {
+        return new Promise((resolve, reject) => {
+            ConnectToMongo().then((d) => {
+                return d.db.collection(this.collectionName).findOne({typeId:id}, function (err, result) {
+                    if (err) return reject(err);
+                    resolve(result as Model);
+                    d.mongoClient.close();
+                })
+            })
+        });      
+    }
+    findByMerchantId(id: string): Promise<Model> {
+        return new Promise((resolve, reject) => {
+            ConnectToMongo().then((d) => {
+                return d.db.collection(this.collectionName).findOne({merchantId:id}, function (err, result) {
+                    if (err) return reject(err);
+                    resolve(result as Model);
+                    d.mongoClient.close();
+                })
+            })
+        });      
+    }
+        
+    
+    
 }

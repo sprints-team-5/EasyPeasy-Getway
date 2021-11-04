@@ -2,6 +2,7 @@ import { IntegerType } from "mongodb";
 
 export class Merchant {
   _id?: string;
+  merchantId: string;
   name: string;
   email: string;
   password: string;
@@ -11,6 +12,7 @@ export class Merchant {
   CVV: IntegerType;
 
   constructor(
+    merchantId: string,
     name: string,
     email: string,
     password: string,
@@ -19,6 +21,7 @@ export class Merchant {
     expireDate: string,
     CVV: IntegerType
   ) {
+    this.merchantId = merchantId;
     this.name = name;
     this.email = email;
     this.password = password;

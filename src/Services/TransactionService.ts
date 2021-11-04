@@ -12,10 +12,12 @@ export class TransactionService {
     customerCardNumber: IntegerType;
     customerExpireDate: string;
     customerCVV: IntegerType;
+    serviceId: string;
     billAmount: Number;
     trxFees: Number;
-    trxType: boolean;
+    totAmount:Number;
     date: Timestamp;
+    trx_status:string;
   }) {
     let transaction = new Transaction(
       data.merchant_id,
@@ -23,10 +25,12 @@ export class TransactionService {
       data.customerCardNumber,
       data.customerExpireDate,
       data.customerCVV,
+      data.serviceId,
       data.billAmount,
       data.trxFees,
-      data.trxType,
-      data.date
+      data.totAmount,
+      data.date,
+      data.trx_status
     );
     let transactionId =
       (await transactionRepo.insert(transaction))?.toString() || "";
